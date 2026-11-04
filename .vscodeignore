@@ -1,0 +1,8 @@
+.vscode/**
+src/**
+out/selftest.js
+out/selftest.js.map
+data.json
+tsconfig.json
+node_modules/**
+*.vscodeignore

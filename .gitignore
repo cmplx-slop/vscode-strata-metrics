@@ -1,0 +1,24 @@
+# dependencies
+node_modules/
+
+# compiled output (npm run compile / watch)
+out/
+
+# packaged extension builds
+*.vsix
+
+# logs
+*.log
+npm-debug.log*
+
+# personal / editor-local settings (launch.json is shared)
+.vscode/*
+!.vscode/launch.json
+
+# OS junk
+.DS_Store
+Thumbs.db
+
+# local reference files (not shipped)
+data.json
+example.html

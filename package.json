@@ -1,0 +1,126 @@
+{
+  "name": "vscode-strata",
+  "displayName": "Strata Metrics",
+  "description": "Shows the live status of a Strata inference engine metrics endpoint in the VS Code status bar.",
+  "version": "0.1.0",
+  "publisher": "cmplx",
+  "repository": "https://github.com/cmplx-slop/vscode-strata-metrics",
+  "license": "MIT",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "strata.showMetrics",
+        "title": "Strata: Show Full Metrics"
+      },
+      {
+        "command": "strata.refreshNow",
+        "title": "Strata: Refresh Metrics Now"
+      },
+      {
+        "command": "strata.setEndpoint",
+        "title": "Strata: Set Metrics Endpoint"
+      },
+      {
+        "command": "strata.setApiKey",
+        "title": "Strata: Set API Key (Bearer Token)"
+      },
+      {
+        "command": "strata.setStatusBarFormat",
+        "title": "Strata: Choose Status Bar Format"
+      }
+    ],
+    "configuration": {
+      "title": "Strata Metrics",
+      "properties": {
+        "strata.enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show the Strata status bar item and poll the metrics endpoint."
+        },
+        "strata.endpoint": {
+          "type": "string",
+          "default": "http://127.0.0.1:8080/metrics",
+          "description": "URL of the Strata JSON metrics endpoint."
+        },
+        "strata.refreshIntervalSeconds": {
+          "type": "number",
+          "default": 2,
+          "minimum": 0.5,
+          "description": "How often the metrics endpoint is polled."
+        },
+        "strata.requestTimeoutSeconds": {
+          "type": "number",
+          "default": 4,
+          "minimum": 1,
+          "description": "Timeout for each metrics request."
+        },
+        "strata.apiKey": {
+          "type": "string",
+          "default": "",
+          "markdownDescription": "Fallback API key sent as `Authorization: Bearer <key>`, for servers started with a key (`--new-key`, `--api-key-env NAME`). Prefer the `Strata: Set API Key` command, which stores the key in VS Code's encrypted secret storage instead of settings.json."
+        },
+        "strata.statusBar.priority": {
+          "type": "number",
+          "default": 105,
+          "markdownDescription": "Ordering among status bar items (higher renders further left). Built-in right-side editor items (Ln/Col, indent, encoding, EOL, language) sit at 100–100.5, so the default 105 places Strata in front of them on the right side. The icon item uses priority + 1."
+        },
+        "strata.statusBar.splitIcon": {
+          "type": "boolean",
+          "default": false,
+          "markdownDescription": "Show the state icon as its own small status bar item in front of the text. This keeps the `$(sync~spin)` animation running uninterrupted by value updates. When `false` (default), the icon is merged into the text (added automatically, or via the `${icon}` placeholder), so the spin restarts on each text update."
+        },
+        "strata.statusBar.alignment": {
+          "type": "string",
+          "enum": [
+            "left",
+            "right"
+          ],
+          "default": "left",
+          "description": "Which side of the status bar the item sits on."
+        },
+        "strata.statusBar.activeStyle": {
+          "type": "string",
+          "enum": [
+            "color",
+            "warning",
+            "spin"
+          ],
+          "default": "color",
+          "markdownDescription": "How the item highlights while the engine is not idle: `color` = item text/icon in `strata.statusBar.activeColor`, `warning` = yellow background, `spin` = spinning icon only. Note: VS Code only allows error/warning backgrounds on status items — custom per-item background colors are rejected by the API."
+        },
+        "strata.statusBar.activeColor": {
+          "type": "string",
+          "default": "#34d399",
+          "markdownDescription": "CSS color used for the item's text/icon while the engine is not idle (used with `activeStyle: color`). Set to an empty string to disable."
+        },
+        "strata.statusBar.format": {
+          "type": "string",
+          "default": "${phase} | ${gen} t/s | avg ${gen_avg} | prefill ${pre} t/s | gpu ${gpu}%",
+          "markdownDescription": "Template for the status bar text. Placeholders: `${state}`, `${phase}`, `${gen}` (decode now, t/s), `${gen_avg}` (average generation speed of this/last request, t/s), `${pre}` (prefill t/s), `${gpu}`, `${vram}`, `${power}`, `${temp}`, `${cpu}`, `${ram}`, `${ctx}`, `${ctxmax}`, `${queued}`, `${running}`, `${model}`, `${hit}` (cache hit rate), `${acc}` (draft acceptance), `${icon}` (state-driven codicon; with `splitIcon: false` it is also prepended automatically if the format has no codicon). Segments separated by `|` whose placeholders have no value are hidden automatically. Any codicon works too, e.g. `$(vm-active)`, `$(device-chip)`, `$(server)`, `$(rocket)`."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "compile": "tsc -p ./",
+    "watch": "tsc -w -p ./",
+    "selftest": "tsc -p ./ && node ./out/selftest.js",
+    "build": "npm run compile && vsce package"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "@types/vscode": "^1.85.0",
+    "@vscode/vsce": "^2.32.0",
+    "typescript": "^5.4.0"
+  }
+}
